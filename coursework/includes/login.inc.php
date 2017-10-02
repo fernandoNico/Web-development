@@ -15,7 +15,7 @@ if (isset($_POST['submit'])) {
 		header("Location: ../index.php?login=empty");
 		exit();
 	} else {
-		$sql = "SELECT * FROM users WHERE user_id='$uid' OR email='$uid'";
+		$sql = "SELECT * FROM users WHERE username='$uid'";
 		$result = mysqli_query($connex, $sql);
 		$resultCheck = mysqli_num_rows($result);
 		if ($resultCheck < 1) {
@@ -33,10 +33,14 @@ if (isset($_POST['submit'])) {
 				} elseif ($passwordChecker == true) {
 					//Log in the user here
 					$_SESSION['u_id'] = $row['id'];
-					$_SESSION['u_first'] = $row['firstname'];
-					$_SESSION['u_last'] = $row['surname'];
+					$_SESSION['username'] = $row['username'];
 					$_SESSION['u_email'] = $row['email'];
-					$_SESSION['u_uid'] = $row['user_id'];
+					$_SESSION['u_active'] = $row['active'];
+
+
+					//$_SESSION['u_last'] = $row['surname'];
+					
+					//$_SESSION['u_uid'] = $row['user_id'];
 					header("Location: ../index.php?login=success");
 					exit();
 				}
