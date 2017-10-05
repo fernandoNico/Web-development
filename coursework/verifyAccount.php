@@ -2,7 +2,7 @@
 include_once 'header.php';
  ?>
 <br>
-<div class="container text-center">
+<div id="wrapper" class="container text-center">
 	<h1>Verify Account</h1>
 	<small>Please verity your account to access to all websites facilities</small>
 

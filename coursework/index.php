@@ -1,9 +1,65 @@
 <?php 
+ob_start();
 include_once 'header.php';
 
  ?>
 	<br>
 	<div class="container text-center">
+
+	<form method="POST" action="">
+		<input type="text" name="to" placeholder="enter email to send">
+		<input type="text" name="subject" placeholder="enter subject">
+		<br>
+		<textarea name="message" id="" cols="30" rows="3"></textarea>
+		<button type="submit" name="submit">Send Email</button>
+	</form>
+
+
+
+<?php 
+if (isset($_REQUEST['submit'])) {
+	$to = $_REQUEST['to'];
+	$subject = $_REQUEST['subject'];
+	$body = $_REQUEST['message'];
+	$from = "admin@fernando.com";
+	$headers = "From: $from";
+
+	if ($to && $subject && $body) {
+		mail($to, $subject, $body, $headers);
+		$rans = rand( 0 , 99000);
+		echo $rans;
+
+	}else{
+
+	}
+
+
+
+
+} else {
+	# code...
+}
+
+
+
+
+
+
+
+ ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
 		<h1>Welcome to the Royal Borough of Greenwich</h1>
 		<small><b>Our Goal: </b> Engage Commuters into to reduce number of cars on the roads.</small>
 	<br />
@@ -28,8 +84,7 @@ include_once 'header.php';
     </form>
 	<br />
 	<br />
-
-
+<div class="card-columns">
 <?php 
 		include './includes/dbh.inc.php';
 
@@ -39,9 +94,10 @@ include_once 'header.php';
 		if (mysqli_num_rows($result) > 0) {
 			while ($row = mysqli_fetch_array($result)) 
 			{
+
 	?>	
 
-		<div class="card mx-auto" style="width:20rem;">
+		<div class="card " style="width:20rem;">
 		  <img class="card-img-top" src="./assets/try.jpg" alt="Card image cap">
 		  <div class="card-body">
 		    <h4 class="card-title"><?php echo $row["destination"]; ?></h4>
@@ -55,24 +111,25 @@ include_once 'header.php';
 		     <li class="list-group-item"><b>Days: </b><?php echo $row["days"]; ?></li>
 		  </ul>
 		  <div class="card-body">
-		    <button type="button" class="btn btn-success btn-sm">Edit</button>
-		    <button type="button" class="btn btn-danger btn-sm">Delete</button>
+		    <button type="button" class="btn btn-success btn-sm">Contact Member</button>
+		    
 		  </div>
 		</div>
+		
 	<br>
 	<?php 		
 			}
 
 		}
-
+echo '</div>';
  ?>
- <div style="clear:both"></div> 
+ 
 
 
 <?php
 	if (isset($_SESSION['u_id'])) {
 
-		$var = $_SESSION['u_id'];
+		$var = $_SESSION['u_active'];
 
 		echo "You are logged in!<br />";
 		echo "<b> User ID: </b>{$_SESSION['u_id']}<br />";
@@ -84,28 +141,15 @@ include_once 'header.php';
 			} else {
 				echo $var . ' is my id' . '<br></br>';
 				echo '<a href="/coursework/memberPage.php" class="btn btn-primary">Add a Post</a>';
-			}
-			
+			}	
 	}	
 ?>
 <br />
+
+
+
 </div>
 </body>
 </html>
 
 
-<!--<div class="card" style="width: 20rem;">
-
-  		<div class="card-body">
-    		<h4 class="card-title"><php? echo $var; ?></h4>
-    		<h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-    		<p class="card-text">Some quick example text to build on the card title and make up the bulk of the cards content.</p>
-    		<a href="#" class="card-link">Add a Post</a>
-  		</div>
-
-  			//echo	$_SESSION['u_id'] ;
-	//echo	$_SESSION['u_email'] ;
-	//echo	$_SESSION['u_active'] ;
-
-
-	</div>-->

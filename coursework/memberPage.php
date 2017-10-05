@@ -10,7 +10,7 @@ include_once 'header.php';
 
 		$var = $_SESSION['username'];
 	
-echo '<div class="container">
+echo '<div id="wrapper" class="container">
 			<h1>Welcome ' . $var .'</h1><br>
 				
 			<form action="includes/addpost.inc.php" method="POST">

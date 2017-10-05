@@ -3,13 +3,13 @@
 if (isset($_POST['submit'])) {
 
 	include_once 'dbh.inc.php';
-
+session_start();
 	
 	$username = mysqli_real_escape_string($connex, $_POST['username']);
 	$password = mysqli_real_escape_string($connex, $_POST['password']);
 	$email = mysqli_real_escape_string($connex, $_POST['email']);
-	$captcha = mysqli_real_escape_string($connex, $_POST['captcha']);
-	//$surname = mysqli_real_escape_string($connex, $_POST['surname']);
+	$captcha = mysqli_real_escape_string($connex, $_POST['captcha_txt']);
+
 
 	
 	//Error handlers
@@ -32,7 +32,12 @@ if (isset($_POST['submit'])) {
 					header("Location: ../signup.php?signup=userTaken");
 					exit();
 				}else {
-					//Hashing thr password
+
+if(isset($_POST['captcha_txt']))  {
+
+	if($_SESSION['captcha_text']==md5(strtolower($_POST['captcha_txt']))){
+		print "<span style=\"color:green\">Correct! You are human</span>";
+		//Hashing thr password
 					$hashpwd = password_hash( $password, PASSWORD_DEFAULT);
 					$captchaInitialValue = false;
 
@@ -44,6 +49,19 @@ if (isset($_POST['submit'])) {
 
 					header("Location: ../signup.php?signup=success");
 					exit();
+	}
+	else{
+	print "<span style=\"color:red\">Incorrect Are you a machine ?</span>";
+	}
+}
+
+
+
+
+
+
+
+					
 
 				}
 
