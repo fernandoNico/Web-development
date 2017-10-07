@@ -10,19 +10,26 @@ if (isset($_POST['submit'])) {
 	$days = mysqli_real_escape_string($connex, $_POST['days']);
 	$lift_Purpose = mysqli_real_escape_string($connex, $_POST['lift']);
 	$add_infomation = mysqli_real_escape_string($connex, $_POST['information']);
-
+    $post_id = $_SESSION['postsId'];
+ 
 	$memberID = $_SESSION['u_id'];
 
 	if (empty($start_Point) || empty($destination) || empty($travel_Times) || empty($days) || empty($lift_Purpose) || empty($add_infomation)) {
-		header("Location: ../signup.php?signup=empty");
-		exit();
+		//header("Location: ../editPostPage.php?update=empty");
+		//exit();
+        echo 'Error Insert data';
 	} else {
-		$sql = "INSERT INTO posts (starting_Point, destination, travel_Times, days, lift_Purpose,post_comment,user_id) 
-	values ('$start_Point','$destination','$travel_Times','$days','$lift_Purpose','$add_infomation','$memberID');";
-
-				mysqli_query($connex, $sql);
-				header("Location: ../index.php?signup=success");
-				exit();
+        
+    $sql = "UPDATE posts SET 
+            starting_Point='$start_Point',
+            destination='$destination',
+            travel_Times='$travel_Times',
+            days='$days',
+            lift_Purpose='$lift_Purpose',
+            post_comment='$add_infomation' WHERE post_id='  $post_id' ";
+            mysqli_query($connex, $sql);
+            header("Location: ../memberPage.php?Postupdate=success");
+            exit();
 
 	}
 
