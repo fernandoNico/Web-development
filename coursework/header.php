@@ -16,7 +16,14 @@ ob_start();
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 
   <style>
-    
+body{
+background-image: url("./assets/circle.png.png");
+ background-repeat: repeat; 
+}
+
+#eror:empty{
+    display: none;
+} 
     #wrapper {
     width: 100%;
     max-width: 600px;
@@ -37,14 +44,14 @@ ob_start();
     column-count: 5;
   }
 }
-      
+
       
   </style>
 
 </head>
 <body>
 <header>
-  <nav class="navbar navbar-expand-lg navbar-light " style="background-color: #e3f2fd;"><!--bg-light"-->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark " style="background-color: #e3f2fd;"><!--bg-light"-->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
     </button>

@@ -58,71 +58,103 @@ include_once 'header.php';
 
 <?php 
 
-if (isset($_REQUEST['submit'])) {
+if (isset($_GET['submit'])) {
+
   include './includes/dbh.inc.php';
 
-  $search = $_GET['search'];
-  $terms = explode(" ", $search);
-  $query="SELECT * FROM posts WHERE ";
-  $i=0;
-  foreach ($terms as $each) {
-    $i++;
-    if ($i==1) {
-      $query .="starting_Point LIKE '%$each%' OR destination LIKE '%$each%' OR travel_Times LIKE '%$each%' OR days LIKE '%$each%' OR lift_Purpose LIKE '%$each%'";
-    }else{
-      $query .= " OR starting_Point LIKE '%$each%'  ";
-    }
-  }
+      $search = $_GET['search'];
+      $terms = explode(" ", $search);
+      $query=" ";
+      $i=0;
+      foreach ($terms as $each) {
+        $i++;
+        if ($i==1) {
+          $query .="starting_Point LIKE '%$each%' OR destination LIKE '%$each%' OR travel_Times LIKE '%$each%' OR days LIKE '%$each%' OR lift_Purpose LIKE '%$each%'";
+        }else{
+          $query .= " OR starting_Point LIKE '%$each%'  ";
+        }
+      }
 
-  $result = mysqli_query($connex, $query);
-  $resultNum =  mysqli_num_rows($result);
+      $sql ="SELECT * FROM posts WHERE $query";
 
-  if ($resultNum > 0 &&  $search!="") {
-    echo '<br>';  
-    echo "$resultNum results(s) found for <b>$search</b>!";
-    echo '<br>';  
+      $result = mysqli_query($connex, $sql);
+      $resultNum =  mysqli_num_rows($result);
+
+
+      if ($resultNum > 0 &&  $search!="") {
+        $per_page = 6;
+        $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1 ;
+        $pages = ceil(mysqli_num_rows($result) / $per_page);
+        $start = ($page - 1) *  $per_page;
+
+
+        $sql = "SELECT * FROM posts WHERE $query LIMIT $start, $per_page"; 
+        $result = mysqli_query($connex, $sql);
+
+
+        echo '<br>';  
+        echo "$resultNum results(s) found for <b>$search</b>!";
+        echo '<br>';  
+        echo '</br>'; 
+        echo '<div class="card-columns">'; 
+
+        while ($row = mysqli_fetch_assoc($result )) {
+          $postId = $row['post_id'];
+          $starting_point = $row['starting_Point'];
+          $destination = $row['destination'];
+          $travel_times = $row['travel_Times'];
+          $days = $row['days'];
+          $lift_purpose = $row['lift_Purpose'];
+          $comments = $row['post_comment'];
+          $userID = $row['user_id'];
+
+
+
+
+
+         echo ' <div class="card" >
+                    <div class="card-body">
+                      <h4 class="card-title">'.$destination.'</h4>
+                      <h6><span class="badge badge-pill badge-warning">'.$lift_purpose.'</span></h6>
+                      <p class="card-text">'.$comments.'.</p>
+                      <p class="card-text">'.$travel_times.'.</p>
+                      <p class="card-text">'.$days.'.</p>
+
+                      <a class="btn btn-success btn-sm " href="contactMember.php?memberID='. $userID.'">Contact Member</a> <br>
+            
+                  </div>
+                  </div>';
+        }
     echo '</br>'; 
-    echo '<div class="card-columns">'; 
+    echo '</div>';
 
-    while ($row = mysqli_fetch_assoc($result )) {
-      $postId = $row['post_id'];
-      $starting_point = $row['starting_Point'];
-      $destination = $row['destination'];
-      $travel_times = $row['travel_Times'];
-      $days = $row['days'];
-      $lift_purpose = $row['lift_Purpose'];
-      $comments = $row['post_comment'];
-      $userID = $row['user_id'];
-
-     echo ' <div class="card" >
-                <div class="card-body">
-                  <h4 class="card-title">'.$destination.'</h4>
-                  <h6><span class="badge badge-pill badge-warning">'.$lift_purpose.'</span></h6>
-                  <p class="card-text">'.$lift_purpose.'.</p>
-                  <p class="card-text">'.$travel_times.'.</p>
-                  <p class="card-text">'.$days.'.</p>
-
-                  <a class="btn btn-success btn-sm " href="contactMember.php?memberID='. $userID.'">Contact Member</a> <br>
-        
-              </div>
-              </div>';
-    }
-echo '</br>'; 
-echo '</div>';
+$prev1 = $page - 1;
+$next1= $page + 1;
 
 
-  }else{
-    echo "No result";
+if (!($page<=1)) {
+  echo "<a href='index.php?page=$prev1'>Prev</a> ";
+}
+ if ($pages >=1) {
+  for($x=1 ; $x <=$pages ; $x++){
+    echo ($x == $page) ? '<b><a class="act" href="?page='.$x.'">'.$x.'</a></b> ' : '<a href="?page='.$x.'">'.$x.'</a> ' ;
   }
+ }
 
+ if (!($page>=$pages)) {
+  echo "<a href='index.php?page=$next1'>Next</a> ";
+}
+
+
+    }else{
+        echo "No result";
+    }
 
 }else{
 
 }
 
-
- ?>
-
+?>
 
 
 
@@ -140,6 +172,7 @@ echo '</div>';
 
 
 
+  <br />
 <hr>
         <br />
       <h2>Recent Posts</h2>
@@ -148,9 +181,7 @@ echo '</div>';
                 <?php 
                         include './includes/dbh.inc.php';
 
-                       //$sql = "SELECT * FROM posts WHERE  post_id ";
-                       // $result = mysqli_query($connex, $sql);
-                        //$resultCheck =  mysqli_num_rows($result);
+                      
 
 
                          $per_page = 6;
@@ -161,10 +192,24 @@ echo '</div>';
                          $start = ($page - 1) *  $per_page;
 
                          $sql = "SELECT * FROM posts LIMIT $start, $per_page"; 
-                         $result = mysqli_query($connex, $sql);
+                        
 
 
+                         // $sql = "SELECT      
+                         //                posts.post_id, 
+                         //                posts.starting_Point,
+                         //                posts.destination, 
+                         //                posts.post_comment,
+                         //                posts.travel_Times, 
+                         //                posts.days, 
+                         //                posts.lift_Purpose,
+                         //                posts.user_id,
+                         //                images.image_path
+                         //  FROM posts
+                         //  INNER JOIN images ON posts.post_id = images.post_id";
 
+
+                           $result = mysqli_query($connex, $sql);
 
 
 
@@ -199,7 +244,7 @@ echo '</div>';
                             }
 
                         }
-echo '</div><br><br>';
+echo '</div>';
 
 echo '<div class="card text-center">
   <div class="card-body">';
@@ -214,8 +259,8 @@ if (!($page<=1)) {
   echo "<a href='index.php?page=$prev'>Prev</a> ";
 }
  if ($pages >=1) {
-  for($x=1 ; $x <=$pages ; $x++){
-    echo ($x == $page) ? '<b><a class="act" href="?page='.$x.'">'.$x.'</a></b> ' : '<a href="?page='.$x.'">'.$x.'</a> ' ;
+  for($y=1 ; $y <=$pages ; $y++){
+    echo ($y == $page) ? '<b><a class="act" href="?page='.$y.'">'.$y.'</a></b> ' : '<a href="?page='.$y.'">'.$y.'</a> ' ;
   }
  }
 
@@ -229,7 +274,7 @@ if (!($page<=1)) {
          
 
 </div>
-
+</body>
 
 
 
