@@ -6,16 +6,35 @@ include_once 'header.php';
 <br>
 
 <?php
-	if (isset($_SESSION['u_id'])) {
+	if (!isset($_SESSION['username']) && isset($_COOKIE["memberCookie"]) ) {
 
-		$var = $_SESSION['username'];
-	
-echo '<div id="wrapper" class="container">
-			<h1>Welcome ' . $var .'</h1><br>
+	$_SESSION['username'] = $_COOKIE["memberCookie"];
+	$id_check= $_SESSION['username'];
+        
+		$getMemberId = "SELECT id from users WHERE username='$id_check'";
+		$result_id = mysqli_query($connex, $getMemberId);
+
+		if (mysqli_num_rows($result_id) > 0) {
+			while ($row_id = mysqli_fetch_array($result_id)) 
+			{
+			
+        		$_SESSION['u_id'] = $row_id['id'];
+        	}
+        }
+
+}
+			echo '<div id="wrapper" class="container post">
+				<h1>Welcome ';
+			echo $_SESSION['username'] ;
+			echo '</h1>';
+
+			;?>
+
+<?php 
+echo '</h1>
+<br>
 				
 			<form  enctype="multipart/form-data"  action="includes/addpost.inc.php" method="POST">
-
-
 
       			<div class="form-row">
           			<div class="form-group col-md-6">
@@ -51,10 +70,7 @@ echo '<div id="wrapper" class="container">
             		<button type="submit" name="submit" class="btn btn-primary btn-block">Add post</button>
     		</form>
 		</div>';
-}else{
-	header("Location: ./index.php?Login=false");
-	exit();
-}
+
 
 
 

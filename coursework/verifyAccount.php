@@ -7,20 +7,7 @@ include_once 'header.php';
 
     header("Location: /index.php");
     exit();
-    //$var = $_SESSION['u_active'];
 
-    // echo "You are logged in!<br />";
-    // echo "<b> User ID: </b>{$_SESSION['u_id']}<br />";
-    // echo "<b> User Email: </b>{$_SESSION['u_email']}<br />";
-    // echo "<b> Active User?: </b>{$_SESSION['u_active']}<br />";
-    //   if ($var == 0) {
-    //     header("Location: /coursework/verifyAccount.php");
-    //     exit();
-    //   } else {
-    //     echo $var . ' is my id' . '<br></br>';
-    //     echo '<a href="/coursework/memberPage.php" class="btn btn-primary">Add a Post</a>';
-    //   } 
-  } 
   else{
 echo '
 

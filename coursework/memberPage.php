@@ -1,23 +1,37 @@
 <?php 
-ob_start();
-include_once 'header.php';
-$usern = $_SESSION['username'];
- ?>
-
-
-<br>
-<div class="container">
-<?php
-    
-    echo '<h1>Welcome ' .$usern.'</h1> 
-    <small>See below your current Posts</small>';
-    ?>
-<br>
+	ob_start();
+	include_once 'header.php';
+?>
 <br>
 
 <?php 
+		
+		
+	if (!isset($_SESSION['username']) && isset($_COOKIE["memberCookie"]) ) {
+
+			$_SESSION['username'] = $_COOKIE["memberCookie"];
+		}
+			echo '<div id="wrapper" class="container">
+				<h1>Welcome ';
+			echo $_SESSION['username'] ;
+			echo '</h1>';?>
+
+
+
+			<br>
+
+<?php 
 		include './includes/dbh.inc.php';
-        $id = $_SESSION['u_id'];
+        $id_check= $_SESSION['username'];
+        
+		$getMemberId = "SELECT id from users WHERE username='$id_check'";
+		$result_id = mysqli_query($connex, $getMemberId);
+
+		if (mysqli_num_rows($result_id) > 0) {
+			while ($row_id = mysqli_fetch_array($result_id)) 
+			{
+			
+        		$id = $row_id['id'];
 
 		$sql = "SELECT * FROM posts WHERE  user_id = ' $id' ";
 		$result = mysqli_query($connex, $sql);
@@ -64,10 +78,12 @@ $usern = $_SESSION['username'];
 				    </tr>
 				  </thead>
 				   <tr>
-				      <th ><img class="card-img"  src=".<?php echo $post_images;?>" alt="Card image caps ="><b>Alt text: </b> <?php echo $post_images; ?></th>
+				      <th >
+						
+				      	<img class="card-img"  src=".<?php echo $post_images;?>" alt="Card image caps ="><br><b>Alt text: </b></br> <?php echo $post_images; ?></th>
 				      <td> 
 				      	<form  action="includes/deletepost_image.inc.php?deleteImagePost=<?php echo $post_image_id ;?>" method="POST">
-                 			<button type="submit" name="submit" class="btn btn-danger ">Delete Post</button><br><br>
+                 			<button type="submit" name="submit" class="btn btn-danger ">Delete Image</button><br><br>
                 		</form>	
 				  	   </td>
 				    </tr>
@@ -82,7 +98,7 @@ $usern = $_SESSION['username'];
 	?>
 
 
-
+<hr>
         <a class="btn btn-success " href="editPostPage.php?postId=<?php echo $postsID;?>">Edit Post</a> <br>
                 <form  action="includes/deletepost.inc.php?deletepostId=<?php echo $postsID;?>" method="POST">
                  <button type="submit" name="submit" class="btn btn-danger ">Delete Post</button>
@@ -94,7 +110,9 @@ $usern = $_SESSION['username'];
 		</div>
 		
 	<br>
-	<?php 		
+	<?php 	
+					}
+				}	
 			}
 
 		}
@@ -102,6 +120,25 @@ $usern = $_SESSION['username'];
  ?>
 
  </div>
+
+
+
+<?php  
+	
+		
+		
+
+
+	
+
+
+ ?>
+
+
+
+
+<br>
+
 
 
 
