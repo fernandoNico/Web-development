@@ -1,8 +1,6 @@
 <?php
 
 session_start();
-  session_start();
-  //  $_SESSION['message'] = '';
 if (isset($_POST['submit'])) {
 	include_once 'dbh.inc.php';
 	//print_r($_FILES);die;
@@ -16,6 +14,7 @@ if (isset($_POST['submit'])) {
 	$image_path=mysqli_real_escape_string($connex,'../images/'. $_FILES['post_image']['name']);
 
 	$memberID = $_SESSION['u_id'];
+    $has_Image='';
 
 	if (empty($start_Point) || empty($destination) || empty($travel_Times) || empty($days) || empty($lift_Purpose) || empty($add_infomation) ||((preg_match("!image!",$_FILES['post_image']['name'])))  ) {
 		header("Location: ../signup.php?signup=empty");
@@ -25,7 +24,7 @@ if (isset($_POST['submit'])) {
 
 
 
-		if (copy($_FILES['post_image']['tmp_name'], $image_path)) {
+		if (move_uploaded_file($_FILES['post_image']['tmp_name'], $image_path)) {
 
 			
 
@@ -35,14 +34,14 @@ if (isset($_POST['submit'])) {
 
 			mysqli_query($connex, $image_sql);
 
-
+             $has_Image='1';
 
 			//header("Location: ../memberPage.php?signup=success");
 		   // exit();
 
 		}
-			$sql = "INSERT INTO posts (post_id, starting_Point, destination, travel_Times, days, lift_Purpose,post_comment,user_id) 
-			values ('$id_post','$start_Point','$destination','$travel_Times','$days','$lift_Purpose','$add_infomation','$memberID');";
+			$sql = "INSERT INTO posts (post_id, starting_Point, destination, travel_Times, days, lift_Purpose,post_comment,user_id,has_images) 
+			values ('$id_post','$start_Point','$destination','$travel_Times','$days','$lift_Purpose','$add_infomation','$memberID','$has_Image');";
 
 			mysqli_query($connex, $sql);
 

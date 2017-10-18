@@ -56,11 +56,10 @@ include_once 'header.php';
 					  <textarea class="form-control" name="information" id="exampleFormControlTextarea1" rows="3" required ><?php echo $row["post_comment"]; ?></textarea>
 	          		</div> 
 					<div class="form-group col-md-12">
-					   		<label class="custom-file">
-  							<input type="file" id="file2" class="custom-file-input">
-							  <span class="custom-file-control"></span>
-							</label>
-					</div> 
+					   		<label>Select an image: 
+					   		</label>
+					   		<input type="file" class="btn btn-light" name="image_posts" accept="imags/*"/>
+					</div>  
 	       
       			</div>
             		<button type="submit" name="submit" class="btn btn-primary">Update Post</button>

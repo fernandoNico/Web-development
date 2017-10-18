@@ -1,416 +1,139 @@
-
-
-
-<?php
-
-
-
- if(isset($_GET["action"]))  
- {
-     if($_GET["action"] == "delete")  
-     {
-         $ids = $_REQUEST['id'];
-         include './includes/dbh.inc.php';
-         
-         $sql = "DELETE FROM POST WHERE post_id=' $ids ' "; 
-            mysqli_query($connex, $sql);
-            header("Location: ../memberPage.php?delete=success");
-            exit();
-         
-         
-         
-     }
-     
-     
- }
-///////    
-
-
-?>
-
-
-http://stumyadmin.cms.gre.ac.uk/sql.php?server=1&db=mdb_fn3704c&table=posts&pos=0
-
 <?php 
+ob_start();
 include_once 'header.php';
-$usern = $_SESSION['username'];
- ?>
-
-
-<br>
-<div class="container">
-
-
-
-
-
-<div class="card-columns">
+?>
 <?php 
-		include './includes/dbh.inc.php';
-        $id = $_SESSION['u_id'];
+if (!isset($_SESSION['username']) && isset($_COOKIE["memberCookie"]) ) {
 
-		$sql = "SELECT * FROM posts WHERE  user_id = ' $id' ";
-		$result = mysqli_query($connex, $sql);
-		//$resultCheck =  mysqli_num_rows($result);
-		if (mysqli_num_rows($result) > 0) {
-			while ($row = mysqli_fetch_array($result)) 
-			{
-
-	?>	
-
-		<div class="card " style="width:20rem;">
-		  <img class="card-img-top" src="./assets/try.jpg" alt="Card image cap">
-		  <div class="card-body">
-		    <h4 class="card-title"><?php echo $row["destination"]; ?></h4>
-		    <h5><span class="badge badge-secondary"><?php echo $row["lift_Purpose"]; ?></span></h5>
-		    <p class="card-text"><?php echo $row["post_comment"]; ?></p>
-		  </div>
-		  <ul class="list-group list-group-flush">
-		    <li class="list-group-item"><b>From: </b><?php echo $row["starting_Point"]; ?></li>
-		    <li class="list-group-item"><b>To: </b><?php echo $row["destination"]; ?></li>
-		    <li class="list-group-item"><b>Times: </b><?php echo $row["travel_Times"]; ?></li>
-		     <li class="list-group-item"><b>Days: </b><?php echo $row["days"]; ?></li>
-		  </ul>
-		  <div class="card-body">
-		    <button type="button" class="btn btn-success btn-sm">Contact Member</button>
-		    
-		  </div>
-		</div>
-		
-	<br>
-	<?php 		
-			}
-
+			$_SESSION['username'] = $_COOKIE["memberCookie"];
 		}
-
- ?>
- </div>
- </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<?php
-ob_start();
-  session_start();
 ?>
-
-
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Document</title>
-
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-
-  <style>
-    
-    #wrapper {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  /*text-align: center;*/
-  padding: 30px 0;
-}
-      
-      
-  </style>
-
-</head>
-<body>
-<header>
-  <nav class="navbar navbar-expand-lg navbar-light "" style="background-color: #e3f2fd;"><!--bg-light"-->
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-    </button>
-      <a class="navbar-brand" href="index.php">Royal Borough of Greenwich</a>
-
-  <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-      
-           
-      <?php if (isset($_SESSION['u_id'])) {
-    echo ' 
-        <li class="nav-item active">
-        <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="memberPage.php" >Member Page</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="addPost.php" >Create a new Post</a>
-        </li>
-        ';
-    
-        }else{
-    echo '<li class="nav-item active">
-        <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="signup.php" >Sign Up</a>
-      </li>
-        ';
-    } 
-        ?>
-
-    </ul>
-        
-        <?php
-        if (isset($_SESSION['u_id'])) {
-         echo ' <form  class="form-inline"  action="includes/logout.inc.php" method="POST">
-                  <div class="input-group">
-                    <button class="btn btn-warning mr-sm-2" type="submit" name="submit">Log out</button>
-                  </div>
-                </form>
-        ';
-
-        } else {
-          echo '<form class="form-inline"  action="includes/login.inc.php" method="POST">
-                  <div class="input-group">
-                    <!--<span class="input-group-addon" id="basic-addon1">@</span>-->
-                      <input type="text" class="form-control mr-sm-2" name="uid" placeholder="Enter username">
-                      <input type="Password" class="form-control mr-sm-2" name="pwd" placeholder="Enter Password" >
-                      <button class="btn btn-primary mr-sm-2" type="submit" name="submit">Login</button>
-                      <a class="btn btn-success mr-sm-2" href="signup.php" >Sign Up</a>
-                  </div>
-                </form>';
-        }
-        
-
-        ?>
-       
-
-      
-  </div>
-</nav>
-</header>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	<div class="container text-center">
+    <br><br>
+		<h1>Welcome to Greenwich  Commuter carpool</h1>
+		<small><b>Our Goal: </b> Engage Commuters to reduce number of cars on the roads.</small>
+	  <br><br><br>
+
+  		<div class="card bg-dark text-white">
+    			<img class="card-img" src="./assets/greenwich.jpg" alt="Card image">
+    				<div class="card-img-overlay"></div>
+  		</div>
+    <br><br>
+	
+      <form class="form-inline mx-auto" method="GET" action="index.php">
+        <div class="input-group">
+            <input class="form-control mr-xl-2" type="text" placeholder="Search" name="search" aria-label="Search">
+        </div>
+        <div class="input-group">  
+            <button class="btn btn-primary my-2 my-sm-0" name="submit">Search</button>
+        </div>
+        <div class="input-group">  
+            <h2>Filter By</h2>
+        </div>
+        <div class="input-group">  
+            <div class="form-check form-check-inline">
+                <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> Destination
+                </label>
+            </div>
+            <div class="form-check form-check-inline">
+                <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> Get a lift
+                </label>
+            </div>
+        </div>
+      </form>
 
 <?php 
-ob_start();
-include_once 'header.php';
- ?>
-	<br>
-	<div class="container">
-	
-		<h1>Welcome to the Royal Borough of Greenwich</h1>
-		<small><b>Our Goal: </b> Engage Commuters into to reduce number of cars on the roads.</small>
-	    <br />
-	    <br />
 
-		<div class="card bg-dark text-white">
-  			<img class="card-img" src="./assets/greenwich.jpg" alt="Card image">
-  				<div class="card-img-overlay">
-				    <!-- <h4 class="card-title" style="color:blue;">Card title</h4>
-				    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-				    <p class="card-text">Last updated 3 mins ago</p> -->
-				     
-				    <!-- <a href="#" class="btn btn-success">See what's on</a> -->
-  				</div>
-		</div>
-        <br />
-        <br />
-	
+  if (isset($_GET['submit'])) {
 
-        <form class="form-inline mx-auto">
-          <input class="form-control mr-xl-2" type="text" placeholder="Search" aria-label="Search">
-          <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
-        </form>
+      include './includes/dbh.inc.php';
+      $search = $_GET['search'];
+      $terms = explode(" ", $search);
+      $query=" ";
+      $i=0;
 
-        <br />
-        <br />
-        
-                <div class="card-columns">
-                <?php 
-                        include './includes/dbh.inc.php';
+      foreach ($terms as $each) {
+        $i++;
+        if ($i==1) {
+          $query .="starting_Point LIKE '%$each%' OR destination LIKE '%$each%' OR travel_Times LIKE '%$each%' OR days LIKE '%$each%' OR lift_Purpose LIKE '%$each%'";
+        }else{
+          $query .= " OR starting_Point LIKE '%$each%'  ";
+        }
+      }
 
-                        $sql = "SELECT * FROM posts WHERE  post_id ";
-                        $result = mysqli_query($connex, $sql);
-                        //$resultCheck =  mysqli_num_rows($result);
-                        if (mysqli_num_rows($result) > 0) {
-                            while ($row = mysqli_fetch_array($result)) 
-                            {
+      $sql ="SELECT * FROM posts WHERE $query";
+      $result = mysqli_query($connex, $sql);
+      $resultNum =  mysqli_num_rows($result);
 
-                    ?>	
 
-                        <div class="card ">
-                              <img class="card-img-top" src="./assets/try.jpg" alt="Card image cap">
-                              <div class="card-body">
-                                    <h4 class="card-title"><?php echo $row["destination"]; ?></h4>
-                                    <h5><span class="badge badge-secondary"><?php echo $row["lift_Purpose"]; ?></span></h5>
-                                    <p class="card-text"><?php echo $row["post_comment"]; ?></p>
-                              </div>
-                              <ul class="list-group list-group-flush">
-                                    <li class="list-group-item"><b>From: </b><?php echo $row["starting_Point"]; ?></li>
-                                    <li class="list-group-item"><b>To: </b><?php echo $row["destination"]; ?></li>
-                                    <li class="list-group-item"><b>Times: </b><?php echo $row["travel_Times"]; ?></li>
-                                     <li class="list-group-item"><b>Days: </b><?php echo $row["days"]; ?></li>
-                               </ul>
-                               <div class="card-body">
-                                    <button type="button" class="btn btn-success btn-sm">Contact Member</button>
-                               </div>
+      if ($resultNum > 0 &&  $search!="") {
+        $per_page = 6;
+        $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1 ;
+        $pages = ceil(mysqli_num_rows($result) / $per_page);
+        $start = ($page - 1) *  $per_page;
+        $sql = "SELECT * FROM posts WHERE $query LIMIT $start, $per_page"; 
+        $result = mysqli_query($connex, $sql);
+
+
+        echo '<br>';  
+        echo "$resultNum results(s) found for <b>$search</b>!";
+        echo '<br>';  
+        echo '</br>'; 
+        echo '<div class="card-columns">'; 
+
+        while ($row = mysqli_fetch_assoc($result )) {
+              $postId = $row['post_id'];
+              $starting_point = $row['starting_Point'];
+              $destination = $row['destination'];
+              $travel_times = $row['travel_Times'];
+              $days = $row['days'];
+              $lift_purpose = $row['lift_Purpose'];
+              $comments = $row['post_comment'];
+              $userID = $row['user_id'];
+
+              echo '  <div class="card" >
+                        <div class="card-body">
+                          <h4 class="card-title">'.$destination.'</h4>
+                          <h6><span class="badge badge-pill badge-warning">'.$lift_purpose.'</span></h6>
+                            <p class="card-text">'.$comments.'.</p>
+                            <p class="card-text">'.$travel_times.'.</p>
+                            <p class="card-text">'.$days.'.</p>
+                            <a class="btn btn-success btn-sm " href="contactMember.php?memberID='. $userID.'">Contact Member</a> <br>
                         </div>
+                      </div>';
+            }
 
-                    
+              echo '</br>
+              </div>';//div card-colums
 
-                    <?php 
-                                
-                            }
+            $prev1 = $page - 1;
+            $next1= $page + 1;
 
-                        }
-echo '</div>';
-                 ?>
+            if (!($page<=1)) {
+              echo "<a href='index.php?page=$prev1'>Prev</a> ";
+            }
 
-                <br>
-         
+                if ($pages >=1) {
+                  for($x=1 ; $x <=$pages ; $x++){
+                      echo ($x == $page) ? '<b><a class="act" href="?page='.$x.'">'.$x.'</a></b> ' : '<a href="?page='.$x.'">'.$x.'</a> ' ;
+                      }
+                }
 
-</div>
-</body>
-</html>
-
-
-
-
-
-
-
+            if (!($page>=$pages)) {
+              echo "<a href='index.php?page=$next1'>Next</a> ";
+            }
 
 
+      }else{ echo "No result";}
 
+  }
 
+?>
+  
 
-
+</div><!-- Div container -->
+<br>
+<br>
+<br>

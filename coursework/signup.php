@@ -27,7 +27,7 @@ include_once 'header.php';
           </div>
 
           <div class="form-group col-md-6">
-              <div class="card" style="width:18.5rem;">
+              <div class="card" >
                 <div class="card-body">
                   <h4 class="card-title">Captcha string</h4>
                   <h6 class="card-subtitle mb-2 text-muted">Enter string accordingly</h6>

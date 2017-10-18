@@ -27,7 +27,7 @@ if (isset($_POST['submit'])) {
                         
                         $sqlito = "UPDATE users SET active_user='1' WHERE username='$currentUser' ";
                         mysqli_query($connex, $sqlito);
-                        //echo 'I am here';
+                        
                         header("Location: ../index.php?verify=success");
 		                exit();
                         

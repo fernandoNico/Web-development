@@ -2,253 +2,252 @@
 ob_start();
 include_once 'header.php';
 ?>
-	<div class="container text-center">
-    <br><br>
-		<h1>Welcome to Greenwich  Commuter carpool</h1>
-		<small><b>Our Goal: </b> Engage Commuters to reduce number of cars on the roads.</small>
-	  <br><br><br>
+<?php 
+if (!isset($_SESSION['username']) && isset($_COOKIE["memberCookie"]) ) {
 
-  		<div class="card bg-dark text-white">
-    			<img class="card-img" src="./assets/greenwich.jpg" alt="Card image">
-    				<div class="card-img-overlay"></div>
-  		</div>
+			$_SESSION['username'] = $_COOKIE["memberCookie"];
+		}
+?>
+<div class="container text-center">
     <br><br>
-	
-      <form class="form-inline mx-auto" method="GET" action="index.php">
+    <h1>Welcome to Greenwich  Commuter Carpool</h1>
+    <small ><b>Our Goal: </b> Engage Commuters to reduce number of cars on the roads.</small>
+    <br><br><br>
+
+    <div class="card bg-dark text-white">
+        <img class="card-img" src="./assets/greenwich.jpg" alt="Card image">
+        <div class="card-img-overlay"></div>
+    </div>
+    <br><br>
+
+    <form class="form-inline mx-auto" method="GET" action="index.php">
         <div class="input-group">
             <input class="form-control mr-xl-2" type="text" placeholder="Search" name="search" aria-label="Search">
         </div>
-        <div class="input-group">  
+        <div class="input-group">
             <button class="btn btn-primary my-2 my-sm-0" name="submit">Search</button>
         </div>
-        <div class="input-group">  
+        <div class="input-group ">
             <h2>Filter By</h2>
         </div>
-        <div class="input-group">  
+        <div class="input-group ">
             <div class="form-check form-check-inline">
                 <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> Destination
+                <input class="form-check-input" type="checkbox" name="dest"  value="option1"> <h6>Destination</h6>
                 </label>
             </div>
             <div class="form-check form-check-inline">
                 <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> Get a lift
+                <input class="form-check-input" type="checkbox" name="no_img" value="option2"><h6>Only post with images</h6> 
                 </label>
             </div>
         </div>
-      </form>
-
-<?php 
-
-  if (isset($_GET['submit'])) {
-
-      include './includes/dbh.inc.php';
-      $search = $_GET['search'];
-      $terms = explode(" ", $search);
-      $query=" ";
-      $i=0;
-
-      foreach ($terms as $each) {
-        $i++;
-        if ($i==1) {
-          $query .="starting_Point LIKE '%$each%' OR destination LIKE '%$each%' OR travel_Times LIKE '%$each%' OR days LIKE '%$each%' OR lift_Purpose LIKE '%$each%'";
-        }else{
-          $query .= " OR starting_Point LIKE '%$each%'  ";
+    </form><br><br>
+    <?php
+        if (isset($_GET['submit'])) {
+            include './includes/dbh.inc.php';
+            $query="";
+            $search = $_GET['search']; 
+            $_SESSION['searchValue'] = $search;
+    
+        if (empty($_GET['search'])){
+             $query = "SELECT * FROM posts"; 
+             
+        }elseif($_GET['search'] && isset($_GET['dest']) == 'on'){
+            
+            $query = " SELECT * FROM posts where destination LIKE '%$search%' "; 
         }
-      }
-
-      $sql ="SELECT * FROM posts WHERE $query";
-      $result = mysqli_query($connex, $sql);
-      $resultNum =  mysqli_num_rows($result);
-
-
-      if ($resultNum > 0 &&  $search!="") {
-        $per_page = 6;
-        $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1 ;
-        $pages = ceil(mysqli_num_rows($result) / $per_page);
-        $start = ($page - 1) *  $per_page;
-        $sql = "SELECT * FROM posts WHERE $query LIMIT $start, $per_page"; 
-        $result = mysqli_query($connex, $sql);
-
-
-        echo '<br>';  
-        echo "$resultNum results(s) found for <b>$search</b>!";
-        echo '<br>';  
-        echo '</br>'; 
-        echo '<div class="card-columns">'; 
-
-        while ($row = mysqli_fetch_assoc($result )) {
-              $postId = $row['post_id'];
-              $starting_point = $row['starting_Point'];
-              $destination = $row['destination'];
-              $travel_times = $row['travel_Times'];
-              $days = $row['days'];
-              $lift_purpose = $row['lift_Purpose'];
-              $comments = $row['post_comment'];
-              $userID = $row['user_id'];
-
-              echo '  <div class="card" >
-                        <div class="card-body">
-                          <h4 class="card-title">'.$destination.'</h4>
-                          <h6><span class="badge badge-pill badge-warning">'.$lift_purpose.'</span></h6>
-                            <p class="card-text">'.$comments.'.</p>
-                            <p class="card-text">'.$travel_times.'.</p>
-                            <p class="card-text">'.$days.'.</p>
-                            <a class="btn btn-success btn-sm " href="contactMember.php?memberID='. $userID.'">Contact Member</a> <br>
-                        </div>
-                      </div>';
-            }
-
-              echo '</br>
-              </div>';//div card-colums
-
-            $prev1 = $page - 1;
-            $next1= $page + 1;
-
-            if (!($page<=1)) {
-              echo "<a href='index.php?page=$prev1'>Prev</a> ";
-            }
-
-                if ($pages >=1) {
-                  for($x=1 ; $x <=$pages ; $x++){
-                      echo ($x == $page) ? '<b><a class="act" href="?page='.$x.'">'.$x.'</a></b> ' : '<a href="?page='.$x.'">'.$x.'</a> ' ;
-                      }
-                }
-
-            if (!($page>=$pages)) {
-              echo "<a href='index.php?page=$next1'>Next</a> ";
-            }
-
-
-      }else{ echo "No result";}
-
-  }
-
-?>
-      <br>
-      <hr>
-      <br>
-      <h2 class="text-left">Recent Posts</h2>
-      <br>
-          <div class="card-columns">
-<?php 
-
-      include './includes/dbh.inc.php';
-      $per_page = 6;
-      $pages_sql= "SELECT post_id FROM posts"; 
-      $result_sql = mysqli_query($connex, $pages_sql);
-      $pages = ceil(mysqli_num_rows($result_sql) / $per_page);
-      $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1 ;
-      $start = ($page - 1) *  $per_page;
-
-      $sql = "SELECT * FROM posts LIMIT $start, $per_page"; 
-      $result = mysqli_query($connex, $sql);
-      
-      if (mysqli_num_rows($result) > 0) {
+        elseif($_GET['search'] && isset($_GET['no_img']) == 'on'){
             
-            while ($row = mysqli_fetch_assoc($result)) {
+            $query = " SELECT * FROM posts where has_images='1'";
+        }
             
-                  $_SESSION['post_id_checker'] = $row['post_id'];
-?>	
-
-              <div class="card ">
-                    <div id="carouselExampleControls<?php echo $_SESSION['post_id_checker'];?>" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-
-<?php 
-
-      $sql_ls = "SELECT posts.post_id, images.image_path FROM posts
-              INNER JOIN images ON posts.post_id = images.post_id";
-      $result_images = mysqli_query($connex, $sql_ls);
-
-            if (mysqli_num_rows( $result_images) > 0) {
-                while ($row_images = mysqli_fetch_assoc( $result_images)) {
-
-                    if ($row_images['post_id'] == $_SESSION['post_id_checker']) {
-
-                        $p_images = trim($row_images["image_path"], '.');
-                        $_SESSION['p'] = false;                                
-?>              
-                             <div class="carousel-item">
-                                  <img class="d-block w-100 img-fluid" src=".<?php echo $p_images;?>" alt="First slide">
-                             </div>
-
-<?php 
-                    }
-                          
-                }
+        else{
+            $query = " SELECT * FROM posts where starting_Point LIKE '%$search%' OR destination LIKE '%$search%' OR days LIKE '%$search%'"; 
+            
+            
+        }
+               
+            $sql = $query;
+            $result = mysqli_query($connex, $sql); 
+            
+            if(mysqli_num_rows($result) == 0)
+            {
+            $message="<br><h1>No posts exists with the given value field!.</h1>";
+            echo $message;
             }
-
- ?>
-
-
-<?php  
-         
-                      echo  "<div class='carousel-item active'>
-                                <img class='d-block w-100' src='./assets/try.jpg' alt='First slide'>
-                            </div>";
-          
-?>
-                      </div><!-- div for corousel inner -->
-
-
-                      <a class="carousel-control-prev" href="#carouselExampleControls<?php echo $_SESSION['post_id_checker'];?>" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                      </a>
-                      <a class="carousel-control-next" href="#carouselExampleControls<?php echo $_SESSION['post_id_checker'];?>" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                      </a>
-                  
-                  </div>
-                  
-                  <div class="card-body">
-                        <h5><span class="badge badge-info"><?php echo $row["lift_Purpose"]; ?></span></h5>
-                        <p class="card-text"><?php echo $row["post_comment"]; ?></p>
-                  </div>
-                  <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><b>From: </b><?php echo $row["starting_Point"]; ?></li>
-                        <li class="list-group-item"><b>To: </b><?php echo $row["destination"]; ?></li>
-                        <li class="list-group-item"><b>Times: </b><?php echo $row["travel_Times"]; ?></li>
-                        <li class="list-group-item"><b>Days: </b><?php echo $row["days"]; ?></li>
-                  </ul>
-                  <div class="card-body">
-                        <a class="btn btn-warning btn-sm " href="contactMember.php?memberID=<?php echo $row["user_id"];?>">Contact Member</a> <br>
-                  </div>
-            </div><!-- End post card images div -->
-<?php 
-      }
-
-    }
-echo '</div>';
-
-echo '<div class="card text-center">
-        <div class="card-body">';
+            
+             $per_page = 6;
+             $num_posts_found = mysqli_num_rows($result);
+             $pages = ceil(mysqli_num_rows($result) / $per_page);
+             $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1 ;
+             $start = ($page - 1) *  $per_page;
+            
+             $query .=" LIMIT $start, $per_page";
+            
+//            echo $query; die;
+            $res = mysqli_query($connex, $query); 
         
+             if (empty($_GET['search'])){
+                 
+            echo'    <div class="card">
+                        <div class="card-body">';
+            echo "<h6>$num_posts_found result(s)!</h6></div>
+                    </div><br>
+                 ";
+                    
+             }else{
+                 echo'    <div class="card">
+                        <div class="card-body">';
+            echo "<h6>$num_posts_found results(s) found for <b>$search</b>!</h6></div>
+                    </div><br>";
+              
+             }
+             
+             $expireSearch = time() + 86400;//24h cookie is on
+             setcookie("lastSearch", $_SESSION['searchValue'], $expireSearch,"/", "stuweb.cms.gre.ac.uk", 0);
+        
+           
+    echo '<div class="card-columns">';
+                
+            while ($row = mysqli_fetch_assoc($res)) 
+            
+                {
+                echo '<div class="card">';
+                
+                $_SESSION['post_id_checker'] = $row['post_id'];
+                $ids =$_SESSION['post_id_checker'];
+                $_SESSION['userNum'] = $row['user_id'];
+                
+                
+                if($row["has_images"]==0){
+echo "<img class='card-img' src='./assets/default.jpg' alt='Card image cap'>" ;
+                    
+                }else{
+
+                    $sql_ls = "SELECT posts.post_id, images.image_path FROM posts
+                                INNER JOIN images ON posts.post_id = images.post_id";
+                    
+                    $result_images = mysqli_query($connex, $sql_ls);
+        
+     echo "  <div id='carouselExampleControls{$ids}' class='carousel slide' data-ride='carousel'>
+                    <div class='carousel-inner'> ";
+                    
+                        if (mysqli_num_rows( $result_images) > 0) {
+                            
+                            $i=true;
+                                while ($row_images = mysqli_fetch_assoc( $result_images)) {
+                            
+                                        if ($row_images['post_id'] == $ids) {
+                                            $p_images = trim($row_images["image_path"], '.');
+                                            
+                                                if ($i) {
+                                                  echo "
+                                                        <div class='carousel-item active'>
+                                                            <img class='d-block w-100' src=.{$p_images} alt='First slide'>
+                                                        </div> "; 
+                                                        $i=false;
+                                                }else{          
+                                                  echo "
+                                                        <div class='carousel-item '>
+                                                        <img class='d-block w-100' src=.{$p_images} alt='First slide'>
+                                                        </div> ";  
+                                                }    
+                                                                                          
+                                        }
+
+                                }
+                  
+                        }
+    echo "
+                    
+                    </div>
+                    <a class='carousel-control-prev' href='#carouselExampleControls{$ids}' role='button' data-slide='prev'>
+                    <span class='carousel-control-prev-icon' aria-hidden='true'></span>
+                    <span class='sr-only'>Previous</span>
+                    </a>
+
+                    <a class='carousel-control-next' href='#carouselExampleControls{$ids}' role='button' data-slide='next''>
+                    <span class='carousel-control-next-icon' aria-hidden='true'></span>
+                    <span class='sr-only'>Next</span>
+                    </a>
+            </div> ";
+            ///////////////
+                }
+                     
+                     
+?>
+            <div class="card-body">
+                <h3 class="card-title"><?php echo $row["starting_Point"]; ?></h3>
+                <h4 class="card-title"><?php echo $row["destination"]; ?></h4>
+                <h5 class="card-title"><?php echo $row["days"]; ?></h5>
+                <h6 class="card-title"><span class="badge badge-info"><?php echo $row["lift_Purpose"]; ?></span></h6>
+                <p class="card-text"><small class="text-muted"><?php echo $row["post_comment"]; ?></small></p>
+                <a class="btn btn-warning btn-sm " href="contactMember.php?memberID=<?php echo $_SESSION['userNum'];?>">Contact Member</a> <br>
+            </div>
+
+        </div>
+        <?php                
+            }
+             
+            
+     echo '</div>'; 
+            
+   echo '<div class="card text-center">
+        <div class="card-body">';
+    
         $prev = $page - 1;
         $next= $page + 1;
 
 
         if (!($page<=1)) {
-          echo "<a href='index.php?page=$prev'>Prev</a> ";
+          echo "<a href='{$_SERVER['PHP_SELF']}?search=$search&submit=&page=$prev'>Prev</a> ";
         }
 
            if ($pages >=1) {
             for($y=1 ; $y <=$pages ; $y++){
-              echo ($y == $page) ? '<b><a class="act" href="?page='.$y.'">'.$y.'</a></b> ' : '<a href="?page='.$y.'">'.$y.'</a> ' ;
+    echo ($y == $page) ? '<b><a class="act" href="?search='.$search.'&submit=&page='.$y.' ">   '.$y.'</a></b> ' : '<a href="?search='.$search.'&submit=&page='.$y.' "> '.$y.'</a> ' ;
             }
            }
 
          if (!($page>=$pages)) {
-          echo "<a href='index.php?page=$next'>Next</a> ";
+          echo "<a href='{$_SERVER['PHP_SELF']}?search=$search&submit=&page=$next'>Next</a> ";
         }
+    
+    
+     echo '</div>
+      </div>';         
+            
+            
+            
+            
+            
+            
+            
+            
+   ///////////    http://stuweb.cms.gre.ac.uk/~fn3704c/index.php?search=&submit=&page=2
+            
+           //       http://stuweb.cms.gre.ac.uk/~fn3704c/index.php?page=2
+            
+            //http://stuweb.cms.gre.ac.uk/~fn3704c/index.php?search=page=2
+            //http://stuweb.cms.gre.ac.uk/~fn3704c/index.php?search=&submit=page=2
+        }
+    
+    
+
+    
+    
 ?>
 
-        </div>
-      </div>
 
-</div><!-- Div container -->
+
+
+
+
+
+
+</div>
+<!-- Div container -->
 <br>
 <br>
 <br>

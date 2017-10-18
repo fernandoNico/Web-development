@@ -64,7 +64,7 @@ echo '</h1>
 					<div class="form-group col-md-12">
 					   		<label>Select an image: 
 					   		</label>
-					   		<input type="file" class="btn btn-light" name="post_image" accept="imags/*"/>
+					   		<input type="file" class="btn btn-light" name="post_image" accept="images/*"/>
 					</div> 
       			</div>
             		<button type="submit" name="submit" class="btn btn-primary btn-block">Add post</button>

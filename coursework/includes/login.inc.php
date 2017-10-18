@@ -8,6 +8,9 @@ if (isset($_POST['submit'])) {
 
 	$uid = mysqli_real_escape_string($connex, $_POST['uid']);
 	$pwd = mysqli_real_escape_string($connex, $_POST['pwd']);
+    
+    
+//    echo $remember; die;
 
 	//Error handlers
 	//Check if inputs are empty
@@ -44,18 +47,13 @@ if (isset($_POST['submit'])) {
 					$_SESSION['u_email'] = $row['email'];
 					$_SESSION['u_active'] = $row['active_user'];
 
-					//echo $_SESSION['username']; die;
 
-					if ($_POST['remember'] == 'on' ) {
-						
-						$expire = time() + 86400;//24h cookie is on
-						setcookie("memberCookie", $_POST['uid'], $expire,"/", "localhost", 0);
+                        if ( isset($_POST['remember']) == 'on') {
 
+                            $expire = time() + 86400;//24h cookie is on
+                            setcookie("memberCookie", $_SESSION['username'], $expire,"/", "stuweb.cms.gre.ac.uk", 0);
 
-						//setcookie("memberCookie");
-						//echo 'memberCookie'; die;
-						//echo $_COOKIE["memberCookie"]; die;
-					}
+                        }
                     
 					header("Location: ../index.php?login=success");
 					exit();

@@ -52,10 +52,20 @@ if(isset($_POST['captcha_txt']))  {
 		mysqli_query($connex, $sql);
 		
 		//Send email structure
-		$from = "nicolalde3006@gmail.com";
+		$from = "fn3704c@gre.ac.uk";
 		$subject = "Account Verification";
 		$headers = "From: $from";	
-		$body = $code;		
+		$body = "
+            
+            Your Verification code is : {$code} <h1>
+            
+        
+                    ";
+        
+        
+        
+        
+        
 		mail($email, $subject,$body,$headers);
 
 		$_SESSION['user'] = $username;

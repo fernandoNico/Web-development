@@ -7,7 +7,7 @@ include_once 'header.php';
 
     header("Location: /index.php");
     exit();
-
+  }
   else{
 echo '
 

@@ -43,7 +43,7 @@
 	?>	
 
 		<div class="card" id="wrapper">
-		  <img class="card-img"  src="./assets/try.jpg" alt="Card image cap">
+		  
 		  <div class="card-body">
 		    <h4 class="card-title"><?php echo $row["destination"]; ?></h4>
 		    <h5><span class="badge badge-secondary"><?php echo $row["lift_Purpose"]; ?></span></h5>
@@ -83,7 +83,7 @@
 				      	<img class="card-img"  src=".<?php echo $post_images;?>" alt="Card image caps ="><br><b>Alt text: </b></br> <?php echo $post_images; ?></th>
 				      <td> 
 				      	<form  action="includes/deletepost_image.inc.php?deleteImagePost=<?php echo $post_image_id ;?>" method="POST">
-                 			<button type="submit" name="submit" class="btn btn-danger ">Delete Image</button><br><br>
+                 			<button type="submit" name="submit" class="btn btn-danger">X</button><br><br>
                 		</form>	
 				  	   </td>
 				    </tr>
